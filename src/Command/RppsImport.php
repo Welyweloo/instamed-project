@@ -36,8 +36,8 @@ class RppsImport extends Command {
             $inputFile = $this->projectDir . "/docs/" . $input->getArgument('file');
             
             $serializer = new Serializer([new ObjectNormalizer()], [new CsvEncoder()]);
-            $rows = $serializer->decode(file_get_contents($inputFile), 'csv',  array(CsvEncoder::DELIMITER_KEY => '|'));
-            dd($rows);
+            $rows = $serializer->decode(file_get_contents($inputFile), 'csv');
+            dd($rows[0]);
             
 
             //Loop over records
