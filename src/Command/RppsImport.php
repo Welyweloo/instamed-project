@@ -35,8 +35,8 @@ class RppsImport extends Command {
             //Convert CSV file into interable 
             $inputFile = $this->projectDir . "/docs/" . $input->getArgument('file');
             
-            $decoder = new Serializer([new ObjectNormalizer()], [new CsvEncoder()]);
-            $rows = $decoder->decode(file_get_contents($inputFile), 'csv');
+            $serializer = new Serializer([new ObjectNormalizer()], [new CsvEncoder()]);
+            $rows = $serializer->decode(file_get_contents($inputFile), 'csv',  array(CsvEncoder::DELIMITER_KEY => '|'));
             dd($rows);
             
 
