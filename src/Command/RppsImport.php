@@ -48,24 +48,21 @@ class RppsImport extends Command {
 
             // Turning off doctrine default logs queries for saving memory
             $this->entityManager->getConnection()->getConfiguration()->setSQLLogger(null);
-            
-            /** @var RPPSRepository rppsRepository */
-            //$rppsRepository = $this->entityManager->getRepository(RPPS::class);
-            
-
+    
             //Parse rpps file line by line to transform them into array
             $batchSize = 20;
             $row = 1;
 
-            if (($handle = fopen($input_rpps_file, "r")) !== FALSE) {
+            //Persist rpps datas in database 
+            /*if (($handle = fopen($input_rpps_file, "r")) !== FALSE) {
                 while (($data = fgetcsv($handle, 1000, ";")) !== FALSE) {
                     
                     $row++;
 
-                    if ( $row != 1) {
+                    if ( $row != 0) {
                         $newRpps = new RPPS();
       
-                        $newRpps->setIdRpps(intval($data[2]));
+                        $newRpps->setIdRpps($data[2]);
                         $newRpps->setTitle($data[4]);
                         $newRpps->setFirstName($data[5]);
                         $newRpps->setLastName($data[6]);
@@ -79,15 +76,43 @@ class RppsImport extends Command {
 
                     }
 
-                    // Each 20 users persisted we flush everything
+                    // Each 20 lines persisted we flush everything
                     if (($row % $batchSize) === 0) {
                         $this->entityManager->flush();
                         // Detaches all objects from Doctrine for memory save
                         $this->entityManager->clear();
                 
+                        //TODO: Need to add some informations about amount of imported data on total datas
                         $now = new \DateTime();
                         $output->writeln(' of users imported ... | ' . $now->format('d-m-Y G:i:s'));
                     }
+
+  
+                }
+
+                fclose($handle);
+            } */
+
+            /** @var RPPSRepository rppsRepository */
+            $rppsRepository = $this->entityManager->getRepository(RPPS::class);
+
+            //Persist cps datas in database 
+            if (($handle = fopen($input_cps_file, "r")) !== FALSE) {
+                while (($data = fgetcsv($handle, 1000, "|")) !== FALSE) {
+                    
+                    $row++;
+
+                    if ($existingRpps = $rppsRepository->findOneBy(["id_rpps" => $data[1]])) {
+                       
+                        var_dump($data[1]);
+                        var_dump($data[11]);
+                        $existingRpps->setCpsNumber($data[11]);
+                        var_dump($existingRpps);
+                        $this->entityManager->persist($existingRpps);
+                        $this->entityManager->flush();
+                    
+
+                }
 
   
                 }
