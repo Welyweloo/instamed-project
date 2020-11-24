@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ApiResource()
  * @ORM\Entity(repositoryClass=RPPSRepository::class)
+ * @ORM\Table(name="rpps",indexes={@ORM\Index(name="rpps_index", columns={"id_rpps"})})
  */
 class RPPS
 {
