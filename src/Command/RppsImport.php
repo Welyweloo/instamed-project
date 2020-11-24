@@ -54,7 +54,7 @@ class RppsImport extends Command {
             $row = 1;
 
             //Persist rpps datas in database 
-            /*if (($handle = fopen($input_rpps_file, "r")) !== FALSE) {
+            if (($handle = fopen($input_rpps_file, "r")) !== FALSE) {
                 while (($data = fgetcsv($handle, 1000, ";")) !== FALSE) {
                     
                     $row++;
@@ -67,11 +67,15 @@ class RppsImport extends Command {
                         $newRpps->setFirstName($data[5]);
                         $newRpps->setLastName($data[6]);
                         $newRpps->setSpecialty($data[8]);
+                        $newRpps->setZipcode($data[24] . " " . $data[25] . " " . $data[27] . " " . $data[28] . " " . $data[29]);
+                        var_dump($data[24] . " " . $data[25] . " " . $data[27] . " " . $data[28] . " " . $data[29]);
                         $newRpps->setZipcode($data[31]);
                         $newRpps->setCity($data[30]);
-                        $newRpps->setPhoneNumer("0". $data[30]);
+                        $newRpps->setPhoneNumer("0". $data[36]);
+                        var_dump($data[36]);
                         $newRpps->setEmail($data[39]);
                         $newRpps->setFinessNumber($data[18]);
+                        
                         $this->entityManager->persist($newRpps);
 
                     }
@@ -84,14 +88,14 @@ class RppsImport extends Command {
                 
                         //TODO: Need to add some informations about amount of imported data on total datas
                         $now = new \DateTime();
-                        $output->writeln(' of users imported ... | ' . $now->format('d-m-Y G:i:s'));
+                        $output->writeln('$row of users imported ... | ' . $now->format('d-m-Y G:i:s'));
                     }
 
   
                 }
 
                 fclose($handle);
-            } */
+            } 
 
             /** @var RPPSRepository rppsRepository */
             $rppsRepository = $this->entityManager->getRepository(RPPS::class);
@@ -104,17 +108,10 @@ class RppsImport extends Command {
 
                     if ($existingRpps = $rppsRepository->findOneBy(["id_rpps" => $data[1]])) {
                        
-                        var_dump($data[1]);
-                        var_dump($data[11]);
                         $existingRpps->setCpsNumber($data[11]);
-                        var_dump($existingRpps);
                         $this->entityManager->persist($existingRpps);
                         $this->entityManager->flush();
-                    
-
-                }
-
-  
+                    }
                 }
 
                 fclose($handle);
