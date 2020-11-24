@@ -40,7 +40,6 @@ class RppsImport extends Command {
 
             // Showing when the script is launched
             $now = new \DateTime();
-            $output->writeln('<comment>Start : ' . $now->format('d-m-Y G:i:s') . ' ---</comment>');
 
             //Recover input file absolute url
             $input_rpps_file = $this->projectDir . "/docs/" . $input->getArgument('rpps-file');
@@ -51,15 +50,24 @@ class RppsImport extends Command {
     
             //Parse rpps file line by line to transform them into array
             $batchSize = 20;
-            $row = 1;
+            $row = 0;
+            $linecount = 0;
+
+            $handle = fopen($input_rpps_file, "r");
+            while(!feof($handle)){
+                $line = fgets($handle);
+                $linecount++;
+            }
+
+            fclose($handle);
+
+            $output->writeln('<comment>Start : ' . $now->format('d-m-Y G:i:s') . ' | You have '. $linecount. ' lines to import from your RPPS file to your database ---</comment>');
 
             //Persist rpps datas in database 
             if (($handle = fopen($input_rpps_file, "r")) !== FALSE) {
-                while (($data = fgetcsv($handle, 1000, ";")) !== FALSE) {
-                    
-                    $row++;
+                while (($data = fgetcsv($handle, 0, ";")) !== FALSE) {
 
-                    if ( $row != 0) {
+                    if ( $row > 0) {
                         $newRpps = new RPPS();
       
                         $newRpps->setIdRpps($data[2]);
@@ -85,38 +93,65 @@ class RppsImport extends Command {
                         // Detaches all objects from Doctrine for memory save
                         $this->entityManager->clear();
                 
-                        //TODO: Need to add some informations about amount of imported data on total datas
                         $now = new \DateTime();
-                        $output->writeln('$row of users imported ... | ' . $now->format('d-m-Y G:i:s'));
+                        $output->writeln($row.' of lines imported out of ' . $linecount . ' | ' . $now->format('d-m-Y G:i:s'));
                     }
 
+                    $row++;
   
                 }
 
                 fclose($handle);
+                $output->writeln('<comment>End : ' . $now->format('d-m-Y G:i:s') . ' | You have imported all datas from your RPPS file to your database ---</comment>');
+
             } 
 
             /** @var RPPSRepository rppsRepository */
             $rppsRepository = $this->entityManager->getRepository(RPPS::class);
 
+            $linecount = 0;
+            $row = 0;
+
+            $handle = fopen($input_rpps_file, "r");
+            while(!feof($handle)){
+                $line = fgets($handle);
+                $linecount++;
+            }
+
+            fclose($handle);
+            $output->writeln('<comment>Start : ' . $now->format('d-m-Y G:i:s') . ' | You have '. $linecount. ' lines to go through on your CPS ---</comment>');
+
+
             //Persist cps datas in database 
             if (($handle = fopen($input_cps_file, "r")) !== FALSE) {
                 while (($data = fgetcsv($handle, 1000, "|")) !== FALSE) {
-                    
-                    $row++;
 
                     if ($existingRpps = $rppsRepository->findOneBy(["id_rpps" => $data[1]])) {
                        
                         $existingRpps->setCpsNumber($data[11]);
                         $this->entityManager->persist($existingRpps);
                         $this->entityManager->flush();
+
+                        // Each 20 lines persisted we flush everything
+                        if (($row % $batchSize) === 0) {
+                            
+                            // Detaches all objects from Doctrine for memory save
+                            $this->entityManager->clear();
+                    
+                            $now = new \DateTime();
+                            $output->writeln($row.' of lines imported out of ' . $linecount . ' | ' . $now->format('d-m-Y G:i:s'));
+                        }
                     }
+
+                    $row++;
                 }
 
                 fclose($handle);
+                $output->writeln('<comment>End : ' . $now->format('d-m-Y G:i:s') . ' | You have imported all needed datas from your CPS file to your database ---</comment>');
+                return Command::SUCCESS;
             }
 
-
+            return Command::FAILURE;
         }
 
 
