@@ -180,14 +180,14 @@ class RPPS
         return $this;
     }
 
-    public function getPhoneNumer(): ?string
+    public function getPhoneNumber(): ?string
     {
-        return $this->phone_numer;
+        return $this->phone_number;
     }
 
-    public function setPhoneNumer(?string $phone_numer): self
+    public function setPhoneNumber(?string $phone_number): self
     {
-        $this->phone_numer = $phone_numer;
+        $this->phone_number = $phone_number;
 
         return $this;
     }

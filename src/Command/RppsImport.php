@@ -67,22 +67,21 @@ class RppsImport extends Command {
                         $newRpps->setFirstName($data[5]);
                         $newRpps->setLastName($data[6]);
                         $newRpps->setSpecialty($data[8]);
-                        $newRpps->setZipcode($data[24] . " " . $data[25] . " " . $data[27] . " " . $data[28] . " " . $data[29]);
-                        var_dump($data[24] . " " . $data[25] . " " . $data[27] . " " . $data[28] . " " . $data[29]);
+                        $newRpps->setAddress($data[24] . " " . $data[25] . " " . $data[27] . " " . $data[28] . " " . $data[29]);
                         $newRpps->setZipcode($data[31]);
                         $newRpps->setCity($data[30]);
-                        $newRpps->setPhoneNumer("0". $data[36]);
-                        var_dump($data[36]);
+                        $newRpps->setPhoneNumber(str_replace(' ', '', $data[36]));
                         $newRpps->setEmail($data[39]);
                         $newRpps->setFinessNumber($data[18]);
                         
                         $this->entityManager->persist($newRpps);
+                        $this->entityManager->flush();
 
                     }
 
                     // Each 20 lines persisted we flush everything
                     if (($row % $batchSize) === 0) {
-                        $this->entityManager->flush();
+                        
                         // Detaches all objects from Doctrine for memory save
                         $this->entityManager->clear();
                 
