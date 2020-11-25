@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ApiResource()
  * @ORM\Entity(repositoryClass=RPPSRepository::class)
+ * @ORM\Table(name="rpps",indexes={@ORM\Index(name="rpps_index", columns={"id_rpps"})})
  */
 class RPPS
 {
@@ -20,7 +21,7 @@ class RPPS
     private $id;
 
     /**
-     * @ORM\Column(type="integer", nullable=true)
+     * @ORM\Column(type="string", nullable=true)
      */
     private $id_rpps;
 
@@ -60,7 +61,7 @@ class RPPS
     private $city;
 
     /**
-     * @ORM\Column(type="integer", nullable=true)
+     * @ORM\Column(type="string", nullable=true)
      */
     private $phone_number;
 
@@ -84,12 +85,12 @@ class RPPS
         return $this->id;
     }
 
-    public function getIdRpps(): ?int
+    public function getIdRpps(): ?string
     {
         return $this->id_rpps;
     }
 
-    public function setIdRpps(?int $id_rpps): self
+    public function setIdRpps(?string $id_rpps): self
     {
         $this->id_rpps = $id_rpps;
 
@@ -180,14 +181,14 @@ class RPPS
         return $this;
     }
 
-    public function getPhoneNumer(): ?int
+    public function getPhoneNumber(): ?string
     {
-        return $this->phone_numer;
+        return $this->phone_number;
     }
 
-    public function setPhoneNumer(?int $phone_numer): self
+    public function setPhoneNumber(?string $phone_number): self
     {
-        $this->phone_numer = $phone_numer;
+        $this->phone_number = $phone_number;
 
         return $this;
     }
