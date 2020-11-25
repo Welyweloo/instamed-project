@@ -52,7 +52,7 @@ class FileProcessor
 
         fclose($handle);
 
-        return $linecount;
+        return $linecount - 1;
     }
 
     /**

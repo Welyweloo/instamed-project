@@ -1,24 +1,24 @@
 <?php 
 
-namespace App\Tests\Util;
+namespace App\tests\Service;
 
 use App\Service\FileProcessor;
+use Doctrine\Common\Annotations\Annotation\Enum;
+use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\HttpKernel\KernelInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 
 class FileProcessorTest extends TestCase
 {
-    public function testGetFilePath()
+    public function testCountFileLines()
     {
+        $fileName = __DIR__ . '/docs/line-count.csv' ;
         $fileProcessor = new FileProcessor();
+        $lineCount = $fileProcessor->getLinesCount($fileName);
 
-        var_dump(__DIR__);
-        $fileName = 'newfile';
-        $testPath = __DIR__ . $fileName;
-
-        $fileNameWithService = $fileProcessor->getFilePath(__DIR__, $fileName);
-
-        // assert that both path match perfectly!
-        $this->assertEquals($testPath, $fileNameWithService);
+        // assert that getLinesCount() method return the good number.
+        $this->assertEquals(5, $lineCount);
     }
+
+
 }
