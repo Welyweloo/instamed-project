@@ -31,8 +31,8 @@ class FileProcessor
     public function processRppsFile(OutputInterface $output, $entityManager, $file, $lineCount, $batchSize): int
     {
         // Showing when the script is launched
-        $now = new \DateTime();
-        $output->writeln('<comment>Start : ' . $now->format('d-m-Y G:i:s') . ' | You have '. $lineCount. ' lines to import from your RPPS file to your database ---</comment>');
+        $start = new \DateTime();
+        $output->writeln('<comment>Start : ' . $start->format('d-m-Y G:i:s') . ' | You have '. $lineCount. ' lines to import from your RPPS file to your database ---</comment>');
 
         //Persist rpps datas in database 
         if (($handle = fopen($file, "r")) !== FALSE) {
@@ -71,8 +71,8 @@ class FileProcessor
                     // Detaches all objects from Doctrine for memory save
                     $entityManager->clear();
             
-                    $now = new \DateTime();
-                    $output->writeln($row.' of lines imported out of ' . $lineCount . ' | ' . $now->format('d-m-Y G:i:s'));
+                    $end = new \DateTime();
+                    $output->writeln($row.' of lines imported out of ' . $lineCount . ' | ' . $end->format('d-m-Y G:i:s'));
                 }
 
                 $row++;
@@ -80,7 +80,7 @@ class FileProcessor
             }
 
             fclose($handle);
-            $output->writeln('<comment>End : ' . $now->format('d-m-Y G:i:s') . ' | You have imported all datas from your RPPS file to your database ---</comment>');
+            $output->writeln('<comment>End of loading : (Started at ' . $start->format('d-m-Y G:i:s') . ' / Ended at ' . $end->format('d-m-Y G:i:s') . ' | You have imported all datas from your RPPS file to your database ---</comment>');
 
         } 
 
@@ -90,8 +90,8 @@ class FileProcessor
     public function processCpsFile(OutputInterface $output, $entityManager, $file, $lineCount, $batchSize): int
     {
         // Showing when the script is launched
-        $now = new \DateTime();
-        $output->writeln('<comment>Start : ' . $now->format('d-m-Y G:i:s') . ' | You have '. $lineCount. ' lines to go through on your CPS ---</comment>');
+        $start = new \DateTime();
+        $output->writeln('<comment>Start : ' . $start->format('d-m-Y G:i:s') . ' | You have '. $lineCount. ' lines to go through on your CPS ---</comment>');
 
         //Persist cps datas in database 
         if (($handle = fopen($file, "r")) !== FALSE) {
@@ -106,25 +106,25 @@ class FileProcessor
                 if ($row > 0) {
                     if ($existingRpps = $rppsRepository->findOneBy(["id_rpps" => $data[1]])) {
                         $existingRpps->setCpsNumber($data[11]);
-                        $this->entityManager->persist($existingRpps);
-                        $this->entityManager->flush();
+                        $entityManager->persist($existingRpps);
+                        $entityManager->flush();
                     }
                 }
 
                 // Each 20 lines persisted we flush everything
                 if (($row % $batchSize) === 0) {
                     // Detaches all objects from Doctrine for memory save
-                    $this->entityManager->clear();
+                    $entityManager->clear();
             
-                    $now = new \DateTime();
-                    $output->writeln($row.' of lines imported out of ' . $lineCount . ' | ' . $now->format('d-m-Y G:i:s'));
+                    $end = new \DateTime();
+                    $output->writeln($row.' of lines imported out of ' . $lineCount . ' | ' . $end->format('d-m-Y G:i:s'));
                 }
 
                 $row++;
             }
 
             fclose($handle);
-            $output->writeln('<comment>End : ' . $now->format('d-m-Y G:i:s') . ' | You have imported all needed datas from your CPS file to your database ---</comment>');
+            $output->writeln('<comment>End of loading :  (Started at ' . $start->format('d-m-Y G:i:s') . ' / Ended at ' . $end->format('d-m-Y G:i:s') . ' | You have imported all needed datas from your CPS file to your database ---</comment>');
 
         }
 
