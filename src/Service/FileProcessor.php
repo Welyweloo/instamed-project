@@ -4,6 +4,8 @@ namespace App\Service;
 
 use App\Entity\RPPS;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\HttpClient\CurlHttpClient;
+use ZipArchive;
 
 /**
  * Contains all useful methods to process files and import them into database.
@@ -96,7 +98,7 @@ class FileProcessor
 
                 if ($row > 0) { //Exits header of csv file
                     if (!$rppsRepository->findOneBy(["id_rpps" => $data[1]])) { //Only persisting data if it's no a duplicate of previously created datas
-                        
+
                         //Creating an RPPS instance to set all datas 
                         //as we're going through each line, then
                         //persistAndFlush
@@ -181,7 +183,7 @@ class FileProcessor
             while (($data = fgetcsv($handle, 1000, "|")) !== FALSE) {
 
                 if ($row > 0) { //Exits header of csv file
-                    
+
                     //Checking if there is a match on the rpps number on both file  
                     //if so, we set the CPS number to the matching line, then
                     //persistAndFlush
@@ -212,5 +214,55 @@ class FileProcessor
         }
 
         return 0;
+    }
+
+    
+    /**
+     * Parses a CSV file with ";" separator into a PHP array
+     * and persistsAdnFlushes them into the database.  
+     *
+     * @param OutputInterface $output
+     * The output instance used to display message to the user.
+     * 
+     * @param [object] $entityManager
+     * The entity manager is a doctrince instance that allows us to 
+     * persist and flush datas into database.
+     * 
+     * @param [string] $file
+     * The path of the file to be processed.
+     * 
+     * @param [int] $lineCount
+     * The amount of lines in the file.
+     * 
+     * @param [int] $batchSize
+     * The amount of data to pass before emptying doctrice cache
+     * 
+     * @return integer
+     * Returns 0 if the whole process worked.
+     */
+    public function getFile($projectDir, $url ,$filename)
+    {
+        //$ch = curl_init($url);
+        $client = new CurlHttpClient();
+        $response = $client->request("GET",$url);
+        //curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        //curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        //$response = curl_exec($ch);
+        $contents = $response->getContent();
+        //curl_close($ch);
+        set_time_limit(500);
+        $filePath = $projectDir.'/docs/'.$filename.'.zip';
+        file_put_contents(
+            $filePath,
+            $response
+        );
+
+        $zip = new ZipArchive;
+        $res = $zip->open($filePath);
+        $zip->extractTo($projectDir.'/docs/');
+        $zip->close();
+        unlink($filePath);
+
+        return $filePath;
     }
 }

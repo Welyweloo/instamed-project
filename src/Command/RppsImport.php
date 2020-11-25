@@ -30,9 +30,7 @@ class RppsImport extends Command {
         protected function configure()
         {
             $this->setDescription('Import RPPS File into databse')
-                ->setHelp('This command will import a RPPS CSV file into your database.')
-                ->addArgument('rpps-file', InputArgument::REQUIRED, 'RPPS File name')
-                ->addArgument('cps-file', InputArgument::REQUIRED, 'CPS File name');
+                ->setHelp('This command will import a RPPS CSV file into your database.');
         }
     
         protected function execute(InputInterface $input, OutputInterface $output)
@@ -44,7 +42,10 @@ class RppsImport extends Command {
                 /**
                  * Handling RPPS File
                  */
-                $input_rpps_file = $this->fileProcessor->getFilePath($this->projectDir, $input->getArgument('rpps-file'));
+                $url="https://annuaire.sante.fr/web/site-pro/extractions-publiques?p_p_id=abonnementportlet_WAR_Inscriptionportlet_INSTANCE_gGMT6fhOPMYV&p_p_lifecycle=2&p_p_state=normal&p_p_mode=view&p_p_cacheability=cacheLevelPage&_abonnementportlet_WAR_Inscriptionportlet_INSTANCE_gGMT6fhOPMYV_nomFichier=ExtractionMonoTable_CAT18_ToutePopulation_202011241543.zip";
+                $fileName ="ExtractionMonoTable_CAT18_ToutePopulation_202011241543";
+                $input_rpps_file = $this->fileProcessor->getFile($this->projectDir, $url ,$fileName);
+
                 $batchSize = 20;
                 $lineCount = $this->fileProcessor->getLinesCount($input_rpps_file);
 
@@ -53,7 +54,10 @@ class RppsImport extends Command {
                 /**
                  * Handling CPS File
                  */
-                $input_cps_file = $this->fileProcessor->getFilePath($this->projectDir, $input->getArgument('cps-file'));
+                $url="https://annuaire.sante.fr/web/site-pro/extractions-publiques?p_p_id=porteurportlet_WAR_Inscriptionportlet_INSTANCE_8W0X22j2B0ON&p_p_lifecycle=2&p_p_state=normal&p_p_mode=view&p_p_cacheability=cacheLevelPage&_porteurportlet_WAR_Inscriptionportlet_INSTANCE_8W0X22j2B0ON_nomFichier=Porteurs_CPS_CPF_202011241543.zip";
+                $fileName ="Porteurs_CPS_CPF_202011241543";
+                $input_cps_file = $this->fileProcessor->getFile($this->projectDir, $url ,$fileName);
+                
                 $batchSize = 20;
                 $lineCount = $this->fileProcessor->getLinesCount($input_cps_file);
                 
