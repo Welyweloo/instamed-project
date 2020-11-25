@@ -9,6 +9,9 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
+/**
+ * Command to import file in empty database.
+ */
 class RppsImport extends Command {
 
         // the name of the command (the part after "bin/console")
@@ -56,6 +59,7 @@ class RppsImport extends Command {
                 
                 $cps = $this->fileProcessor->processCpsFile($output, $this->entityManager, $input_cps_file, $lineCount, $batchSize);
             
+                //Checking failure
                 if (!$rpps == 0) {
                     echo 'Rpps load failed';
                     return Command::FAILURE;
