@@ -39,6 +39,10 @@ class RppsImport extends Command {
                 // Turning off doctrine default logs queries for saving memory
                 $this->entityManager->getConnection()->getConfiguration()->setSQLLogger(null);
 
+                // Showing when the cps process is launched
+                $start = new \DateTime();
+                $output->writeln('<comment>' . $start->format('d-m-Y G:i:s') . ' Start processing :---</comment>');
+
                 /**
                  * Handling RPPS File
                  */

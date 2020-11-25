@@ -5,7 +5,7 @@ namespace App\Service;
 use App\Entity\RPPS;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\HttpClient\CurlHttpClient;
-use ZipArchive;
+use \ZipArchive;
 
 /**
  * Contains all useful methods to process files and import them into database.
@@ -217,47 +217,39 @@ class FileProcessor
     }
 
     
-    /**
-     * Parses a CSV file with ";" separator into a PHP array
-     * and persistsAdnFlushes them into the database.  
-     *
-     * @param OutputInterface $output
-     * The output instance used to display message to the user.
-     * 
-     * @param [object] $entityManager
-     * The entity manager is a doctrince instance that allows us to 
-     * persist and flush datas into database.
-     * 
-     * @param [string] $file
-     * The path of the file to be processed.
-     * 
-     * @param [int] $lineCount
-     * The amount of lines in the file.
-     * 
-     * @param [int] $batchSize
-     * The amount of data to pass before emptying doctrice cache
-     * 
-     * @return integer
-     * Returns 0 if the whole process worked.
-     */
+/**
+ * Downloads zipfile from url, extracts files.
+ *
+ * @param [string] $projectDir
+ * The root path of the project dir from current file.
+ * 
+ * @param [string] $url
+ * The url from which we can recover the file
+ * 
+ * @param [string] $filename
+ * The name of the file we want to process
+ * 
+ * @return string
+ */
     public function getFile($projectDir, $url ,$filename)
     {
-        //$ch = curl_init($url);
-        $client = new CurlHttpClient();
-        $response = $client->request("GET",$url);
-        //curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        //curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        //$response = curl_exec($ch);
-        $contents = $response->getContent();
-        //curl_close($ch);
+        $ch = curl_init($url);
+
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        $response = curl_exec($ch);
+
+        curl_close($ch);
+
         set_time_limit(500);
+
         $filePath = $projectDir.'/docs/'.$filename.'.zip';
         file_put_contents(
             $filePath,
             $response
         );
 
-        $zip = new ZipArchive;
+        $zip = new \ZipArchive;
         $res = $zip->open($filePath);
         $zip->extractTo($projectDir.'/docs/');
         $zip->close();
