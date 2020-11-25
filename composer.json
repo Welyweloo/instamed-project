@@ -1,4 +1,6 @@
 {
+    "name": "symfony/symfony",
+    "description": "The Symfony PHP framework",
     "type": "project",
     "license": "proprietary",
     "require": {
