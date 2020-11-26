@@ -7,7 +7,10 @@ use App\Repository\RPPSRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ApiResource()
+ * @ApiResource(
+ *      collectionOperations={"get"},
+ *      itemOperations={"get"},
+ * )
  * @ORM\Entity(repositoryClass=RPPSRepository::class)
  * @ORM\Table(name="rpps",indexes={@ORM\Index(name="rpps_index", columns={"id_rpps"})})
  */
