@@ -252,9 +252,10 @@ class FileProcessor
         $zip = new \ZipArchive;
         $res = $zip->open($filePath);
         $zip->extractTo($projectDir.'/docs/');
+        $fileName = $projectDir . '/docs/' . $zip->getNameIndex(0);
         $zip->close();
         unlink($filePath);
 
-        return $filePath;
+        return $fileName;
     }
 }
