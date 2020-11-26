@@ -113,6 +113,9 @@
     "fig/link-util": {
         "version": "1.1.1"
     },
+    "liip/test-fixtures-bundle": {
+        "version": "1.10.0"
+    },
     "nelmio/cors-bundle": {
         "version": "1.5",
         "recipe": {
@@ -161,6 +164,9 @@
     "symfony/asset": {
         "version": "v5.1.8"
     },
+    "symfony/browser-kit": {
+        "version": "v5.1.8"
+    },
     "symfony/cache": {
         "version": "v5.1.8"
     },
@@ -182,6 +188,9 @@
             "bin/console"
         ]
     },
+    "symfony/css-selector": {
+        "version": "v5.1.8"
+    },
     "symfony/dependency-injection": {
         "version": "v5.1.8"
     },
@@ -189,6 +198,9 @@
         "version": "v2.2.0"
     },
     "symfony/doctrine-bridge": {
+        "version": "v5.1.8"
+    },
+    "symfony/dom-crawler": {
         "version": "v5.1.8"
     },
     "symfony/dotenv": {
@@ -353,6 +365,9 @@
     },
     "symfony/string": {
         "version": "v5.1.8"
+    },
+    "symfony/test-pack": {
+        "version": "v1.0.7"
     },
     "symfony/translation-contracts": {
         "version": "v2.3.0"

@@ -2,14 +2,15 @@
 
 namespace App\tests\Service;
 
+use App\Entity\RPPS;
 use App\Service\FileProcessor;
-use Doctrine\Common\Annotations\Annotation\Enum;
-use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\Common\Persistence\ObjectManager;
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\Console\Output\OutputInterface;
+
 
 class FileProcessorTest extends TestCase
 {
+
     public function testCountFileLines()
     {
         $fileName = __DIR__ . '/docs/line-count.csv' ;
