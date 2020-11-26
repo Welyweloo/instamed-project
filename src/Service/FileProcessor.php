@@ -135,8 +135,18 @@ class FileProcessor
 
             fclose($handle);
 
+            //Creates a file timestamp to save the timestamp's file RPPS
+            $file_old_timestamp = fopen($projectDir . "/docs/" . "old-timestamp.txt", "w");
+
+            
+            $old_timestamp = filemtime($file);
+            fwrite($myfile, $old_timestamp);
+            
+            fclose($myfile);
+
             // Showing when the rpps process is done
             $output->writeln('<comment>End of loading : (Started at ' . $start->format('d-m-Y G:i:s') . ' / Ended at ' . $end->format('d-m-Y G:i:s') . ' | You have imported all datas from your RPPS file to your database ---</comment>');
+            $output->writeln($old_timestamp);
         }
 
         return 0;
@@ -226,34 +236,34 @@ class FileProcessor
          
          //Retrieves old timestamp from file
          //To check if RPPS file have been updated
-         if (($handle = fopen($file, "r")) !== FALSE) {
+        //  if (($handle = fopen($file_old_timestamp, "r")) !== FALSE) {
 
-            /** @var RPPSRepository rppsRepository */
-            $rppsRepository = $entityManager->getRepository(RPPS::class);
+        //     /** @var RPPSRepository rppsRepository */
+        //     $rppsRepository = $entityManager->getRepository(RPPS::class);
 
-            $row = 0;
+        //     $row = 0;
 
-            while (($data = fgetcsv($handle, 1000, "|")) !== FALSE) {
+        //     while (($data = fgetcsv($handle, 1000, "|")) !== FALSE) {
                 
-                $old_timestamp = strtotime($data[0]);
+        //         $old_timestamp = date("F d Y H:i:s", ($data[0]));
                 
-                $row++;
-            }
-        }
+        //         $row++;
+        //     }
+        // }
         
-        $new_timestamp = filemtime($file);
+        // $new_timestamp = filemtime($file);
 
-        //defines whether or not we need to update the database
-        if($new_timestamp != $old_timestamp)
-        {
-            $old_timestamp = $new_timestamp;
-            $modified = true;
-        }
-        else
-        {
-            $modified = false;
+        // //defines whether or not we need to update the database
+        // if(date("F d Y H:i:s.", $new_timestamp) > date("F d Y H:i:s.", $old_timestamp))
+        // {
+        //     $modified = true;
+        //     $old_timestamp = $new_timestamp;
+        // }
+        // else
+        // {
+        //     $modified = false;
             
-        }
+        // }
 
         // Showing when the rpps process is launched
         $start = new \DateTime();
@@ -265,8 +275,8 @@ class FileProcessor
 
         $rppsDatas = $rppsRepository->findAll();
 
-        if($modified) // If the timestamp's file has been modified
-        {
+        //if($modified) // If the timestamp's file has been modified
+        //{
 
             // Will go through file by iterating on each line to save memory 
             if (($handle = fopen($file, "r")) !== FALSE) {
@@ -285,22 +295,22 @@ class FileProcessor
                             //Creating an RPPS instance to set all datas 
                             //as we're going through each line, then
                             //persistAndFlush
-                            $newRpps = new RPPS();
+                            // $newRpps = new RPPS();
 
-                            $newRpps->setIdRpps($data[2]);
-                            $newRpps->setTitle($data[4]);
-                            $newRpps->setFirstName($data[5]);
-                            $newRpps->setLastName($data[6]);
-                            $newRpps->setSpecialty($data[8]);
-                            $newRpps->setAddress($data[24] . " " . $data[25] . " " . $data[27] . " " . $data[28] . " " . $data[29]);
-                            $newRpps->setZipcode($data[31]);
-                            $newRpps->setCity($data[30]);
-                            $newRpps->setPhoneNumber(str_replace(' ', '', $data[36]));
-                            $newRpps->setEmail($data[39]);
-                            $newRpps->setFinessNumber($data[18]);
+                            // $newRpps->setIdRpps($data[2]);
+                            // $newRpps->setTitle($data[4]);
+                            // $newRpps->setFirstName($data[5]);
+                            // $newRpps->setLastName($data[6]);
+                            // $newRpps->setSpecialty($data[8]);
+                            // $newRpps->setAddress($data[24] . " " . $data[25] . " " . $data[27] . " " . $data[28] . " " . $data[29]);
+                            // $newRpps->setZipcode($data[31]);
+                            // $newRpps->setCity($data[30]);
+                            // $newRpps->setPhoneNumber(str_replace(' ', '', $data[36]));
+                            // $newRpps->setEmail($data[39]);
+                            // $newRpps->setFinessNumber($data[18]);
 
-                            $entityManager->persist($newRpps);
-                            $entityManager->flush();
+                            // $entityManager->persist($newRpps);
+                            // $entityManager->flush();
                         }
                         elseif(!$rppsRepository->findOneBy(["id_rpps" => $data[2]]))
                         {
@@ -310,7 +320,9 @@ class FileProcessor
                         else
                         {
                             $output->writeln("Data already exists");
-                            $output->writeln($new_timestamp);
+
+                            $output->writeln("Ancien timestamp : " . date("F d Y H:i:s.", $old_timestamp));
+                            $output->writeln("Nouveau timestamp : " . date("F d Y H:i:s.", $new_timestamp));
 
                         }
 
@@ -332,18 +344,18 @@ class FileProcessor
                 fclose($handle);
 
                 //Delete the file
-                unlink($file);
+                //unlink($file);
 
                 // Showing when the rpps process is done
                 $output->writeln('<comment>End of loading : (Started at ' . $start->format('d-m-Y G:i:s') . ' / Ended at ' . $end->format('d-m-Y G:i:s') . ' | You have imported all datas from your RPPS file to your database ---</comment>');
             }
 
-        }
-        else
-        {
-            $output->writeln($new_timestamp);
-            $output->writeln("The file has not been modified");
-        }
+        // }
+        // else
+        // {
+        //     $output->writeln($new_timestamp);
+        //     $output->writeln("The file has not been modified");
+        // }
 
         return 0;
     }
