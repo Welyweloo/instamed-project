@@ -6,6 +6,8 @@ use App\Entity\RPPS;
 use App\Service\FileProcessor;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
+use Symfony\Component\Console\Output\ConsoleOutput;
+use Symfony\Component\Console\Output\OutputInterface;
 
 class RppsFixtures extends Fixture
 {
@@ -16,12 +18,15 @@ class RppsFixtures extends Fixture
 
     public function load(ObjectManager $manager)
     {
+        $output = new ConsoleOutput();
+
         $fileName = __DIR__ . '/docs/line-count.csv' ;
 
+        $this->fileProcessor->processRppsFile($output, $manager, $fileName, 5, 1);
         // Will go through file by iterating on each line to save memory 
-        if (($handle = fopen($fileName, "r")) !== FALSE) {
+        /*if (($handle = fopen($fileName, "r")) !== FALSE) {
 
-            /** @var RPPSRepository rppsRepository */
+           
             $rppsRepository = $manager->getRepository(RPPS::class);
 
             $row = 0;
@@ -57,7 +62,7 @@ class RppsFixtures extends Fixture
             }
 
             fclose($handle);
-        }
+        }*/
 
     }
 }

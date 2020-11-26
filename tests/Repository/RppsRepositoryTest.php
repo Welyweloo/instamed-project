@@ -6,7 +6,7 @@ use App\Entity\RPPS;
 use Liip\TestFixturesBundle\Test\FixturesTrait;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
-class ProductRepositoryTest extends KernelTestCase
+class RppsRepositoryTest extends KernelTestCase
 {
     use FixturesTrait;
 
@@ -25,7 +25,7 @@ class ProductRepositoryTest extends KernelTestCase
     }
 
 
-    public function testRppsProcess()
+    public function testRppsImportToDB()
     {
         // add all your fixtures classes that implement
         // Doctrine\Common\DataFixtures\FixtureInterface
