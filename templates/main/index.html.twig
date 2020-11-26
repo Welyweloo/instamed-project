@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello MainController!{% endblock %}
+
+{% block body %}
+<div class="container">
+    <h1>Bonjour Dr. "NOM"</h1>
+
+    <h2>Annuaire des practiciens</h2>
+    <p>Pour obtenir les informations d'un autre practicien, veuillez saisir son nom ou sa spécialité.</p>
+
+    <form action="" method="POST">
+        <label for="doctorName">Recherche par nom</label>
+        <input type="text" name="doctorName" id="doctorName" />
+        <label for="specialty">Recherche par spécialité</label>
+        <input type="text" name="specialty" id="specialty" />
+    </form>
+
+</div>
+{% endblock %}

@@ -12,25 +12,6 @@ use \ZipArchive;
  */
 class FileProcessor
 {
-    /**
-     * 
-     * Creates a string representing the path of a file in the directory.
-     *
-     * @param [string] $projectDir
-     * The path of the project dir from root.
-     * 
-     * @param [string] $argument
-     * The file name obtained with the user argument input
-     * 
-     * @return string
-     * The path of the file we're using from root.
-     */
-    public function getFilePath($projectDir, $argument): string
-    {
-        //Check 'config/services.yaml
-        $filePath = $projectDir . "/docs/" . $argument;
-        return $filePath;
-    }
 
     /**
      * Counts how much line there is in a file.
@@ -233,29 +214,38 @@ class FileProcessor
  */
     public function getFile($projectDir, $url ,$filename)
     {
+       // initialisation of the session
         $ch = curl_init($url);
-
+        
+        // configuration of options
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        
+        // exécution and close the session
         $response = curl_exec($ch);
-
         curl_close($ch);
-
+        
+        // Change execution time 
         set_time_limit(500);
-
         $filePath = $projectDir.'/docs/'.$filename.'.zip';
+        
+        // Write the result in a file
         file_put_contents(
-            $filePath,
-            $response
+        $filePath,
+        $response
         );
-
+        
+        // Extract file
         $zip = new \ZipArchive;
         $res = $zip->open($filePath);
         $zip->extractTo($projectDir.'/docs/');
         $fileName = $projectDir . '/docs/' . $zip->getNameIndex(0);
         $zip->close();
+        
+        // Delete zip
         unlink($filePath);
-
+        
         return $fileName;
+  
     }
 }
