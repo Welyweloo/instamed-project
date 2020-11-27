@@ -11,38 +11,118 @@
 
     <form action="" method="POST">
         <div class="formInput">
-            <label for="doctorName">Recherche par <em>Prénom | Nom</em></label>
-            <input type="text" name="doctorName" id="doctorName" placeholder="Marie DUPONT" />
+            <label for="doctorName">Recherche par <em>Nom</em></label>
+            <input type="text" name="doctorName" id="lastname" placeholder="DUPONT" />
         </div>
         <div class="formInput">
             <label for="rpps" >Recherche par <em>numéro RPPS</em></label>
-            <input type="text" name="specialty" id="rpps" placeholder="810003447500"/>
+            <input type="text" name="rpps" id="rpps" placeholder="810003447500"/>
         </div>
         <div class="formInput">
             <label for="doctorId">Recherche par <em>numéro CPS</em></label>
-            <input type="doctorId" name="specialty" id="doctorId" placeholder="2800487804" />
+            <input type="doctorId" name="doctorId" id="doctorId" placeholder="2800487804" />
         </div>
-
-        <button class="btn btn-info" type="submit">Afficher la fiche</button>
     </form>
 
-    <div id="doctorInfos">
-        <div id="presentation">
-            <p id="firstname"><strong>Prénom:</strong> <span>Marie</span></p>
-            <p id="lastname"><strong>Nom:</strong> <span>Dupont</span></p>
-        </div>
-        <div id="numbers">
-        <p id="rpps"><strong>Numéro RPPS:</strong> <span>2800487804</span></p>
-        <p id="cps"><strong>Numéro CPS:</strong> <span>810003447500</span></p>
-        </div>
-
-        <p id="specialty"><strong>Spécialité:</strong> <span>Gynécologue</span></p>
-        <p id="numberPhone"><strong>Numéro:</strong> <span>0102030405</span></p>
-        <p id="email"><strong>Email:</strong> <span>marie@dupont.fr</span></p>
-        <p id="address"><strong>Adresse:</strong> <span>20 rue des Marguerites - 75012 Paris</span></p>
-    </div>
+    <div id="result"></div>
 
 </div>
 
-
 {% endblock %}
+
+    {% block javascripts %}
+        {{ parent() }}
+
+        <script>
+            const inputLastName = document.getElementById('lastname');
+
+            // Function used to add delay on ajax request. 
+            const debounce = (func, delay) => { 
+                let debounceTimer 
+                return function() { 
+                    const context = this
+                    const args = arguments 
+                        clearTimeout(debounceTimer) 
+                            debounceTimer 
+                        = setTimeout(() => func.apply(context, args), delay) 
+                } 
+            }  
+            
+            inputLastName.addEventListener('keyup', debounce(handleKeyUp, 500));
+            let lastName;
+            let resultDiv = document.getElementById('result');
+
+            function handleKeyUp(evt)
+            {
+                lastName = evt.target.value;
+
+                if (lastName.length > 2) {
+                    query(lastName);
+                }
+
+                function query(datas) {
+                    fetch("http://127.0.0.1:8000/api/r_p_p_s?last_name=" + lastName +"&page=1")
+                        .then(
+                            (response) => {
+                                return response.status == 200 ?
+                                    (
+                                        console.log(response.status + ' - opération effectué'),
+                                        response.json()
+                                    )
+                
+                                    :
+                                    (response.status === 204) ? response.status + ' - pas de resultats'
+                                        :
+                                        console.log('L\'opération a échoué')
+                            })
+                        .then(
+                            (datas) => {
+                                
+                                if (datas['hydra:member'] !== 204) {
+
+                                    datas['hydra:member'].forEach(
+                                        function(data)
+                                        {
+
+                                            let divInformations = document.createElement('div');
+                                            divInformations.classList.add('divInformations', 'card');
+
+                                            let name = document.createElement('p');
+                                            name.classList.add('name');
+                                            name.textContent = data.title + " " + data.firstName + " " + data.lastName;
+                                            let rpps = document.createElement('p');
+                                            rpps.textContent = "Numéro RPPS:" + data.idRpps;
+                                            let cps = document.createElement('p');
+                                            cps.textContent = "Numéro CPS:" + data.cpsNumber;
+                                            let address = document.createElement('p');
+                                            address.textContent = "Adresse:" + data.address + " - " + data.city;
+                                            let phoneNumber = document.createElement('p');
+                                            phoneNumber.textContent = "Numéro de téléphone:" + data.phoneNumber;
+                                            let emailAddress = document.createElement('p');
+                                            emailAddress.textContent = "Numéro de téléphone:" + data.email;
+
+                                            divInformations.appendChild(name);
+                                            divInformations.appendChild(rpps);
+                                            divInformations.appendChild(cps);
+                                            divInformations.appendChild(address);
+                                            divInformations.appendChild(phoneNumber);
+                                            divInformations.appendChild(emailAddress);
+
+                                            resultDiv.appendChild(divInformations);
+
+
+
+                                        }
+                                    )
+
+                                }
+                            }
+                        );
+                }
+            }
+
+        </script>
+
+    {% endblock %}
+
+                                 

@@ -3,6 +3,7 @@ body {
     background-size: contain;
     background-repeat: no-repeat;
     height: 100vh;
+
 }
 
 h1 {
@@ -65,4 +66,25 @@ input:focus {
 
 #firstname, #lastname, #rpps, #cps  {
     margin: 10px;
+}
+
+#rpps-error-hidden {
+    display: none;
+}
+
+#result {
+    display: flex;
+    flex-wrap: wrap;
+    position: relative;
+    top: 200px;
+}
+
+.divInformations {
+    padding: 1.5em;
+    margin: 2em;
+
+}
+
+.card {
+    width: 500px;
 }

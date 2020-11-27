@@ -4,16 +4,18 @@ namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Core\Bridge\Elasticsearch\DataProvider\Filter\OrderFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\RppsFilter;
 use App\Repository\RPPSRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ApiResource(
- *     collectionOperations={"get"},
- *     itemOperations={"get"},
- *     attributes={"filters"={"rpps.id_rpps"}}
+ *      collectionOperations={"get"},
+ *      itemOperations={"get"},
  * )
+ * @ApiFilter(SearchFilter::class, properties={"last_name", "first_name" ,"id_rpps"})
  * @ORM\Entity(repositoryClass=RPPSRepository::class)
  * @ORM\Table(name="rpps",indexes={@ORM\Index(name="rpps_index", columns={"id_rpps"})})
  */
