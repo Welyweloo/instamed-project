@@ -101,6 +101,7 @@ class FileProcessor
                         //Creating an RPPS instance to set all datas 
                         //as we're going through each line, then
                         //persistAndFlush
+                        
                         $newRpps = new RPPS();
 
                         $newRpps->setIdRpps($data[2]);
@@ -136,17 +137,17 @@ class FileProcessor
             fclose($handle);
 
             //Creates a file timestamp to save the timestamp's file RPPS
-            $file_old_timestamp = fopen($projectDir . "/docs/" . "old-timestamp.txt", "w");
-
+            //fopen($projectDir . "/docs/" . "old-timestamp.txt", "w");
             
-            $old_timestamp = filemtime($file);
-            fwrite($myfile, $old_timestamp);
+            //fwrite($myfile, $old_timestamp);
             
-            fclose($myfile);
+            //fclose($myfile);
 
             // Showing when the rpps process is done
             $output->writeln('<comment>End of loading : (Started at ' . $start->format('d-m-Y G:i:s') . ' / Ended at ' . $end->format('d-m-Y G:i:s') . ' | You have imported all datas from your RPPS file to your database ---</comment>');
-            $output->writeln($old_timestamp);
+            
+            //$old_timestamp = filemtime($file);
+           //$output->writeln($old_timestamp);
         }
 
         return 0;
@@ -220,6 +221,7 @@ class FileProcessor
 
             // Showing when the cps process is done
             $output->writeln('<comment>End of loading :  (Started at ' . $start->format('d-m-Y G:i:s') . ' / Ended at ' . $end->format('d-m-Y G:i:s') . ' | You have imported all needed datas from your CPS file to your database ---</comment>');
+        
         }
 
         return 0;
@@ -233,7 +235,7 @@ class FileProcessor
          * otherwise, block the script
          * 
          */
-         
+
          //Retrieves old timestamp from file
          //To check if RPPS file have been updated
         //  if (($handle = fopen($file_old_timestamp, "r")) !== FALSE) {
@@ -290,40 +292,37 @@ class FileProcessor
                         if (!$rppsRepository->findOneBy(["id_rpps" => $data[2]])) { //Only persisting data if it's no a duplicate of previously created datas
                         
                             $output->writeln("New data to insert into the database");
-                            $output->writeln("New PP ID : " . $data[2]);
+                            //$output->writeln("New PP ID : " . $data[2]);
+                            //$output->writeln($old_timestamp);
 
                             //Creating an RPPS instance to set all datas 
                             //as we're going through each line, then
                             //persistAndFlush
-                            // $newRpps = new RPPS();
+                            $newRpps = new RPPS();
 
-                            // $newRpps->setIdRpps($data[2]);
-                            // $newRpps->setTitle($data[4]);
-                            // $newRpps->setFirstName($data[5]);
-                            // $newRpps->setLastName($data[6]);
-                            // $newRpps->setSpecialty($data[8]);
-                            // $newRpps->setAddress($data[24] . " " . $data[25] . " " . $data[27] . " " . $data[28] . " " . $data[29]);
-                            // $newRpps->setZipcode($data[31]);
-                            // $newRpps->setCity($data[30]);
-                            // $newRpps->setPhoneNumber(str_replace(' ', '', $data[36]));
-                            // $newRpps->setEmail($data[39]);
-                            // $newRpps->setFinessNumber($data[18]);
+                            $newRpps->setIdRpps($data[2]);
+                            $newRpps->setTitle($data[4]);
+                            $newRpps->setFirstName($data[5]);
+                            $newRpps->setLastName($data[6]);
+                            $newRpps->setSpecialty($data[8]);
+                            $newRpps->setAddress($data[24] . " " . $data[25] . " " . $data[27] . " " . $data[28] . " " . $data[29]);
+                            $newRpps->setZipcode($data[31]);
+                            $newRpps->setCity($data[30]);
+                            $newRpps->setPhoneNumber(str_replace(' ', '', $data[36]));
+                            $newRpps->setEmail($data[39]);
+                            $newRpps->setFinessNumber($data[18]);
 
-                            // $entityManager->persist($newRpps);
-                            // $entityManager->flush();
+                            $entityManager->persist($newRpps);
+                            $entityManager->flush();
                         }
                         elseif(!$rppsRepository->findOneBy(["id_rpps" => $data[2]]))
                         {
                             $output->writeln("This data doesn't exist in the RPPS file : need to delete into the database");
-                            $output->writeln($data[2]);
+                            //$output->writeln($data[2]);
                         }
                         else
                         {
                             $output->writeln("Data already exists");
-
-                            $output->writeln("Ancien timestamp : " . date("F d Y H:i:s.", $old_timestamp));
-                            $output->writeln("Nouveau timestamp : " . date("F d Y H:i:s.", $new_timestamp));
-
                         }
 
                     }
