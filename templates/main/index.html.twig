@@ -4,17 +4,45 @@
 
 {% block body %}
 <div class="container">
-    <h1>Bonjour Dr. "NOM"</h1>
-
-    <h2>Annuaire des practiciens</h2>
-    <p>Pour obtenir les informations d'un autre practicien, veuillez saisir son nom ou sa spécialité.</p>
+    <p id="morningDoctor">Bonjour Dr. JOLIVERT</p>
+    <img src="{{ asset('images/doctor.jpeg') }}" class="img-rounded"/>
+    <h1>Annuaire des practiciens</h1>
+    <p>Retrouvez ici les contacts de vos collaborateurs.</p>
 
     <form action="" method="POST">
-        <label for="doctorName">Recherche par nom</label>
-        <input type="text" name="doctorName" id="doctorName" />
-        <label for="specialty">Recherche par spécialité</label>
-        <input type="text" name="specialty" id="specialty" />
+        <div class="formInput">
+            <label for="doctorName">Recherche par <em>Prénom | Nom</em></label>
+            <input type="text" name="doctorName" id="doctorName" placeholder="Marie DUPONT" />
+        </div>
+        <div class="formInput">
+            <label for="rpps" >Recherche par <em>numéro RPPS</em></label>
+            <input type="text" name="specialty" id="rpps" placeholder="810003447500"/>
+        </div>
+        <div class="formInput">
+            <label for="doctorId">Recherche par <em>numéro CPS</em></label>
+            <input type="doctorId" name="specialty" id="doctorId" placeholder="2800487804" />
+        </div>
+
+        <button class="btn btn-info" type="submit">Afficher la fiche</button>
     </form>
 
+    <div id="doctorInfos">
+        <div id="presentation">
+            <p id="firstname"><strong>Prénom:</strong> <span>Marie</span></p>
+            <p id="lastname"><strong>Nom:</strong> <span>Dupont</span></p>
+        </div>
+        <div id="numbers">
+        <p id="rpps"><strong>Numéro RPPS:</strong> <span>2800487804</span></p>
+        <p id="cps"><strong>Numéro CPS:</strong> <span>810003447500</span></p>
+        </div>
+
+        <p id="specialty"><strong>Spécialité:</strong> <span>Gynécologue</span></p>
+        <p id="numberPhone"><strong>Numéro:</strong> <span>0102030405</span></p>
+        <p id="email"><strong>Email:</strong> <span>marie@dupont.fr</span></p>
+        <p id="address"><strong>Adresse:</strong> <span>20 rue des Marguerites - 75012 Paris</span></p>
+    </div>
+
 </div>
+
+
 {% endblock %}
