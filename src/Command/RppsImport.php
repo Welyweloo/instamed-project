@@ -46,32 +46,31 @@ class RppsImport extends Command {
                 /**
                  * Handling RPPS File
                  */
-                $url="https://annuaire.sante.fr/web/site-pro/extractions-publiques?p_p_id=abonnementportlet_WAR_Inscriptionportlet_INSTANCE_gGMT6fhOPMYV&p_p_lifecycle=2&p_p_state=normal&p_p_mode=view&p_p_cacheability=cacheLevelPage&_abonnementportlet_WAR_Inscriptionportlet_INSTANCE_gGMT6fhOPMYV_nomFichier=ExtractionMonoTable_CAT18_ToutePopulation_202011241543.zip";
-                $fileName ="ExtractionMonoTable_CAT18_ToutePopulation_202011241543";
+               
+                $url="https://service.annuaire.sante.fr/annuaire-sante-webservices/V300/services/extraction/ExtractionMonoTable_CAT18_ToutePopulation";
                 
-                $input_rpps_file = $this->fileProcessor->getFile($this->projectDir, $url ,$fileName);
+                $input_rpps_file = $this->fileProcessor->getFile($this->projectDir, $url);
 
                 $batchSize = 20;
                 $lineCount = $this->fileProcessor->getLinesCount($input_rpps_file);
 
                 $rpps = $this->fileProcessor->processRppsFile($output, $this->entityManager, $input_rpps_file, $lineCount, $batchSize);
 
-                unlink($fileName + '.zip');
+                unlink($input_rpps_file);
 
                 /**
                  * Handling CPS File
                  */
-                $url="https://annuaire.sante.fr/web/site-pro/extractions-publiques?p_p_id=porteurportlet_WAR_Inscriptionportlet_INSTANCE_8W0X22j2B0ON&p_p_lifecycle=2&p_p_state=normal&p_p_mode=view&p_p_cacheability=cacheLevelPage&_porteurportlet_WAR_Inscriptionportlet_INSTANCE_8W0X22j2B0ON_nomFichier=Porteurs_CPS_CPF_202011241543.zip";
-                $fileName ="Porteurs_CPS_CPF_202011241543";
-                $input_cps_file = $this->fileProcessor->getFile($this->projectDir, $url ,$fileName);
+                $url = "https://service.annuaire.sante.fr/annuaire-sante-webservices/V300/services/extraction/Porteurs_CPS_CPF";
+                $input_cps_file = $this->fileProcessor->getFile($this->projectDir, $url);
                 
                 $batchSize = 20;
                 $lineCount = $this->fileProcessor->getLinesCount($input_cps_file);
                 
                 $cps = $this->fileProcessor->processCpsFile($output, $this->entityManager, $input_cps_file, $lineCount, $batchSize);
             
-                unlink($fileName + '.zip');
-                
+                unlink($cps);
+
                 //Checking failure
                 if (!$rpps == 0) {
                     echo 'Rpps load failed';

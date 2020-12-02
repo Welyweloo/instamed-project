@@ -225,40 +225,49 @@ class FileProcessor
  * 
  * @return string
  */
-    public function getFile($projectDir, $url ,$filename)
+    public function getFile($projectDir, $url)
     {
-       // initialisation of the session
+
+        $filePath = $projectDir.'/docs/file.zip';
+        $my_file = fopen($filePath, 'w');
+
+        // initialisation of the session
         $ch = curl_init($url);
-        
-        // configuration of options
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        
-        // exécution and close the session
-        $response = curl_exec($ch);
-        curl_close($ch);
-        
+
         // Change execution time 
-        set_time_limit(500);
-        $filePath = $projectDir.'/docs/'.$filename.'.zip';
-        
-        // Write the result in a file
-        file_put_contents(
-        $filePath,
-        $response
-        );
-        
-        // Extract file
+        $timeout = 300;
+
+        // configuration of options
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_FILE, $my_file);
+        curl_setopt($ch, CURLOPT_FAILONERROR, 1);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
+        curl_setopt($ch, CURLOPT_BUFFERSIZE, 4096);
+
+        curl_exec($ch) OR die("Error in curl_exec()");
+
+        echo("Zip downloaded.");
+
+        fclose($my_file);
+        curl_close($ch);
+
+
         $zip = new \ZipArchive;
+ 
         $res = $zip->open($filePath);
+        echo 'après';
         $zip->extractTo($projectDir.'/docs/');
         $fileName = $projectDir . '/docs/' . $zip->getNameIndex(0);
         $zip->close();
         
         // Delete zip
         unlink($filePath);
-        
-        return $fileName;
+ 
+        return $fileName;      
   
     }
     public function updateRppsFile(OutputInterface $output, $entityManager, $file, $lineCount, $batchSize): int
