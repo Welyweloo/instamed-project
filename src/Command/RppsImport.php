@@ -15,7 +15,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 class RppsImport extends Command {
 
         // the name of the command (the part after "bin/console")
-        protected static $defaultName = 'app:import-rpps-datas';
+        protected static $defaultName = 'app:rpps:import';
         private $entityManager;
         private $fileProcessor;
 
@@ -48,16 +48,15 @@ class RppsImport extends Command {
                  */
                 $url="https://annuaire.sante.fr/web/site-pro/extractions-publiques?p_p_id=abonnementportlet_WAR_Inscriptionportlet_INSTANCE_gGMT6fhOPMYV&p_p_lifecycle=2&p_p_state=normal&p_p_mode=view&p_p_cacheability=cacheLevelPage&_abonnementportlet_WAR_Inscriptionportlet_INSTANCE_gGMT6fhOPMYV_nomFichier=ExtractionMonoTable_CAT18_ToutePopulation_202011241543.zip";
                 $fileName ="ExtractionMonoTable_CAT18_ToutePopulation_202011241543";
-                var_dump($fileName);
                 
                 $input_rpps_file = $this->fileProcessor->getFile($this->projectDir, $url ,$fileName);
-                var_dump($input_rpps_file);
 
                 $batchSize = 20;
                 $lineCount = $this->fileProcessor->getLinesCount($input_rpps_file);
 
                 $rpps = $this->fileProcessor->processRppsFile($output, $this->entityManager, $input_rpps_file, $lineCount, $batchSize);
-                var_dump($rpps);
+
+                unlink($fileName + '.zip');
 
                 /**
                  * Handling CPS File
@@ -71,6 +70,8 @@ class RppsImport extends Command {
                 
                 $cps = $this->fileProcessor->processCpsFile($output, $this->entityManager, $input_cps_file, $lineCount, $batchSize);
             
+                unlink($fileName + '.zip');
+                
                 //Checking failure
                 if (!$rpps == 0) {
                     echo 'Rpps load failed';

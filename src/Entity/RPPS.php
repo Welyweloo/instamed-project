@@ -15,10 +15,7 @@ use Doctrine\ORM\Mapping as ORM;
  *      collectionOperations={"get"},
  *      itemOperations={"get"},
  * )
-<<<<<<< HEAD
  * @ApiFilter(SearchFilter::class, properties={"last_name", "first_name" ,"id_rpps"})
-=======
->>>>>>> api
  * @ORM\Entity(repositoryClass=RPPSRepository::class)
  * @ORM\Table(name="rpps",indexes={@ORM\Index(name="rpps_index", columns={"id_rpps"})})
  */
